@@ -8,8 +8,6 @@
     <header
         android:fragment="com.example.safekey.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
-    <header
-        android:fragment="com.example.safekey.SettingsActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
+    
 
 </preference-headers>

@@ -1,23 +1,33 @@
 package com.example.safekey;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.EditTextPreference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
+import android.text.InputType;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import java.util.List;
+
+
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -42,12 +52,26 @@ public class SettingsActivity extends PreferenceActivity {
 	static final int PLAY_NOW = 0;
 	static final int DONT_PLAY = -1;
 	static final String LINK="http://";
-
+	
+	static String password;
+	static View focusView = null;
+	public static Activity activity;
+	public static SharedPreferences getSharedPreferences(Context ctxt){
+		return ctxt.getSharedPreferences("Login", Context.MODE_PRIVATE);
+	}
+	
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 
-		setupSimplePreferencesScreen();
+		
+		activity = this;		
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayHomeAsUpEnabled(true);
+	    setupSimplePreferencesScreen();
+	    
 	}
 
 	/**
@@ -63,31 +87,57 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// In the simplified UI, fragments are not used at all and we instead
 		// use the older PreferenceActivity APIs.
-
-		// Add 'general' preferences.
-		addPreferencesFromResource(R.xml.pref_general);
-
-		// Add 'notifications' preferences, and a corresponding header.
-		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-		fakeHeader.setTitle(R.string.pref_header_notifications);
-		getPreferenceScreen().addPreference(fakeHeader);
-		addPreferencesFromResource(R.xml.pref_notification);
-
-		// Add 'data and sync' preferences, and a corresponding header.
-		fakeHeader = new PreferenceCategory(this);
-		fakeHeader.setTitle(R.string.pref_header_data_sync);
-		getPreferenceScreen().addPreference(fakeHeader);
-		addPreferencesFromResource(R.xml.pref_data_sync);
-
-		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-		// their values. When their values change, their summaries are updated
-		// to reflect the new value, per the Android Design guidelines.
-		bindPreferenceSummaryToValue(findPreference("example_text"));
-		bindPreferenceSummaryToValue(findPreference("example_list"));
-		bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+		SharedPreferences auth_pref = SettingsActivity.getSharedPreferences(SettingsActivity.this.getApplicationContext());
+		String name = auth_pref.getString("name", null);
+		password = auth_pref.getString("password", null);	
+		addPreferencesFromResource(R.xml.preferences);
+			
+		
+		// Add  preferences.
+		EditTextPreference gen = (EditTextPreference) findPreference("username");
+		Log.d("Username1", name);
+		if (!name.equals(null)){
+			gen.setDefaultValue(name);
+			gen.setSummary(name);
+			gen.getEditText().setText(name);
+						
+		} else {
+			return;
+		}
+		//Log.d("Value", gen.getSummary().toString());	
+		
+		
+		PreferenceManager.setDefaultValues(SettingsActivity.this, R.xml.preferences, false);
 		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+		bindPreferenceSummaryToValue(gen);
+		
+		//first time initialization ONLY
+		
+		gen.setSummary(name);
+		gen.getEditText().setText(name);
+		
+		
+		
+		
+		
+		//Add password preferences
+		/*PreferenceCategory pwdHeader = new PreferenceCategory(this);
+		pwdHeader.setTitle("Password");
+		getPreferenceScreen().addPreference(pwdHeader);
+		addPreferencesFromResource(R.xml.pref_password);
+		
+		PreferenceCategory dhHeader = new PreferenceCategory(this);
+		dhHeader.setTitle("Driver History");
+		getPreferenceScreen().addPreference(dhHeader);
+		addPreferencesFromResource(R.xml.pref_notification);*/
+		
+		
+		Preference pref = findPreference("enableAdmin");
+		pref.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		
 	}
 
+	
 	/** {@inheritDoc} */
 	@Override
 	public boolean onIsMultiPane() {
@@ -99,7 +149,8 @@ public class SettingsActivity extends PreferenceActivity {
 	 * example, 10" tablets are extra-large.
 	 */
 	private static boolean isXLargeTablet(Context context) {
-		return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) 
+					>= Configuration.SCREENLAYOUT_SIZE_XLARGE;
 	}
 
 	/**
@@ -123,14 +174,97 @@ public class SettingsActivity extends PreferenceActivity {
 			loadHeadersFromResource(R.xml.pref_headers, target);
 		}
 	}
+	
 
+	private static void showDialog(final CheckBoxPreference preference){
+		AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.activity);
+	 	builder.setTitle("Enter Admin Password");
+	 	final EditText input = new EditText(SettingsActivity.activity);
+	 	input.setHint("Enter Password");
+	 	input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+	 	builder.setView(input);
+	 	
+	 	builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	 		public void onClick(DialogInterface dialog, int id) { } }); 
+	 	
+	 	builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	 		public void onClick(DialogInterface dialog, int id) {
+	 			preference.setChecked(false);
+	 			dialog.cancel();
+	 		}
+	 	});
+	 	final AlertDialog dialog = builder.create();
+	 	dialog.show();
+	 	dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {            
+            @Override
+            public void onClick(View v)
+            {
+
+	 			Boolean wantToCloseDialog = false;
+	 			Log.d("String", input.getText().toString());
+	 			Log.d("Passwd", password);
+	 			if (input.getText().toString().equals(password)){
+	 				preference.setChecked(true);
+	 				wantToCloseDialog = true;
+	 				 			
+	 			}else{
+	 				Log.d("Stringy", input.getText().toString());
+	 				input.setError("Incorrect Password");
+	 				focusView = input;
+	 				focusView.requestFocus();
+	 				preference.setChecked(false); 
+	 				
+	 				
+	 			}	
+            	       
+                //Do stuff, possibly set wantToCloseDialog to true then...
+                if(wantToCloseDialog)
+                    dialog.dismiss();
+                //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
+            }
+        });
+	}
+	/*private Preference.OnPreferenceClickListener listener = new OnPreferenceClickListener() {
+
+	    public boolean onPreferenceClick(final Preference preference) {
+	    	//boolean success = true;
+	    	if (preference.getKey().equals("enableAdmin") && !preference.isEnabled()){
+	    	 	AlertDialog.Builder builder = new AlertDialog.Builder(preference.getContext());
+	    	 	builder.setMessage("Enter Admin Password");
+	    	 	final EditText input = new EditText(preference.getContext());
+	    	 	builder.setView(input);
+	    	 	builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	    	 		public void onClick(DialogInterface dialog, int id) {
+	    	 			if (input.getText().toString().equals("password")){
+	    	 				dialog.cancel();
+	    	 				
+	    	 			}else{
+	    	 				
+	    	 				input.setError("Enter new password again");
+	    	 				focusView = input;
+	    	 				preference.setEnabled(false);
+	    	 				
+	    	 				
+	    	 			}
+	    			 
+	    	 		}
+	    	 	}); 
+	    	}
+	    	return true;
+	    }
+	
+		};*/
+	
+	
 	/**
 	 * A preference value change listener that updates the preference's summary
 	 * to reflect its new value.
 	 */
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
-		public boolean onPreferenceChange(Preference preference, Object value) {
+		public boolean onPreferenceChange(final Preference preference, Object value) {
 			String stringValue = value.toString();
 
 			if (preference instanceof ListPreference) {
@@ -143,34 +277,25 @@ public class SettingsActivity extends PreferenceActivity {
 				preference
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
 								: null);
-
-			} else if (preference instanceof RingtonePreference) {
-				// For ringtone preferences, look up the correct display value
-				// using RingtoneManager.
-				if (TextUtils.isEmpty(stringValue)) {
-					// Empty values correspond to 'silent' (no ringtone).
-					preference.setSummary(R.string.pref_ringtone_silent);
-
-				} else {
-					Ringtone ringtone = RingtoneManager.getRingtone(
-							preference.getContext(), Uri.parse(stringValue));
-
-					if (ringtone == null) {
-						// Clear the summary if there was a lookup error.
-						preference.setSummary(null);
-					} else {
-						// Set the summary to reflect the new ringtone display
-						// name.
-						String name = ringtone
-								.getTitle(preference.getContext());
-						preference.setSummary(name);
-					}
-				}
-
-			} else {
+		} else if (preference instanceof CheckBoxPreference){
+			Log.d("Pref", preference.getKey());
+			Log.d("Val", stringValue);
+			if (preference.getKey().equals("enableAdmin") && stringValue.equals("true")){
+				showDialog((CheckBoxPreference) preference);
+			}
+		}else {
+			
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
 				preference.setSummary(stringValue);
+				if (preference.getKey().equals("username")){
+					SharedPreferences auth_pref = MyApplication.getAppContext().getSharedPreferences("Login", MODE_PRIVATE);
+					SharedPreferences.Editor editor = auth_pref.edit();
+					editor.putString("name", stringValue);
+					Log.d("d Username", stringValue);
+					editor.commit();
+				}
+				
 			}
 			return true;
 		}
@@ -190,15 +315,18 @@ public class SettingsActivity extends PreferenceActivity {
 		preference
 				.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
+		Log.d("Val", PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(),
+						"").toString());
 		// Trigger the listener immediately with the preference's
 		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(
-				preference,
-				PreferenceManager.getDefaultSharedPreferences(
-						preference.getContext()).getString(preference.getKey(),
-						""));
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+				PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(),
+						"")); 
+		Log.d("Summary", preference.getSummary().toString());
 	}
 
+	
+	
 	/**
 	 * This fragment shows general preferences only. It is used when the
 	 * activity is showing a two-pane settings UI.
@@ -208,53 +336,25 @@ public class SettingsActivity extends PreferenceActivity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_general);
+			addPreferencesFromResource(R.xml.preferences);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("example_text"));
-			bindPreferenceSummaryToValue(findPreference("example_list"));
+			bindPreferenceSummaryToValue(findPreference("username"));
+			
 		}
 	}
 
-	/**
-	 * This fragment shows notification preferences only. It is used when the
-	 * activity is showing a two-pane settings UI.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class NotificationPreferenceFragment extends
-			PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_notification);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-		}
+	
+	@Override
+	public void onBackPressed() {
+		//to ensure that users cannot go back to the setup page
+		super.onBackPressed();
+		finish();
 	}
+	
 
-	/**
-	 * This fragment shows data and sync preferences only. It is used when the
-	 * activity is showing a two-pane settings UI.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class DataSyncPreferenceFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_data_sync);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-		}
-	}
+	
 }

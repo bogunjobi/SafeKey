@@ -7,28 +7,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Setup" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
-        android:drawableLeft="@drawable/ic_add"
-        android:gravity="center_horizontal"
-        android:text="@string/click"
-        android:clickable="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-                
-        android:textStyle="bold" />
     
     <View
 	    android:id="@+id/separator"
 	    android:layout_width="fill_parent"
 	    android:layout_height="0.4dp"
 	    android:layout_alignParentRight="true"
-	    android:layout_below="@+id/textView1"
+	    android:layout_below="@+id/add_contacts"
 	    android:layout_marginTop="5dp"
 	    android:background="@android:color/darker_gray"
 	    android:visibility="visible" />
@@ -38,8 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:clickable="true"
         android:layout_below="@+id/separator"
-        android:layout_alignLeft="@+id/textView1"
+        android:drawableRight="@drawable/ic_cancel"
+        android:visibility="invisible"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
@@ -47,8 +34,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact1"
-        android:layout_alignLeft="@+id/textView1"
+        android:clickable="true"
+        android:drawableRight="@drawable/ic_cancel"
+    	android:visibility="invisible"
+        android:layout_marginTop="15dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/add_contacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/separator"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/separator"
+        android:layout_marginTop="61dp"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_add"
+        android:gravity="center_horizontal"
+        android:text="@string/click"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/skip"
@@ -56,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/contact2"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
         android:clickable="true"
         android:fontFamily="sans-serif-light"
         android:text="@string/skip"
@@ -66,8 +72,9 @@
         android:id="@+id/finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView1"
+        android:layout_alignRight="@+id/contact2"
         android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"
         android:clickable="true"
         android:fontFamily="sans-serif-light"
         android:gravity="center_horizontal"

@@ -1,0 +1,70 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+   
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:capitalize="words"
+        android:inputType="textCapWords"
+        android:key="username"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_display_name" />
+
+  
+   <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enableAdmin"
+        android:title="Enable Admin" />
+    
+	  <!-- Passwords PreferenceCategory -->
+	 
+	  <PreferenceCategory
+        android:title="Password"  >
+        
+    <com.example.safekey.SK_DialogPreference
+        android:title="Change Password"
+        android:dependency="enableAdmin"
+        android:key = "pwd"
+        />
+    
+    <EditTextPreference
+        android:capitalize="words"
+        android:inputType="textCapWords"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Recover Password" />
+   
+	 </PreferenceCategory>
+	 
+	   <!-- Driver History PreferenceCategory -->
+	 
+	  <PreferenceCategory
+        android:title="Driver History"  >
+    
+	     <!--
+         A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked.
+         -->
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="hist"
+        android:dependency="enableAdmin"
+        android:title="Collect Driver History" />
+
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+    <ListPreference
+        android:defaultValue="3"
+        android:dependency="hist"
+        android:entries="@array/frequency"
+        android:entryValues="@array/freqVal"
+        android:key="sync_frequency"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Frequency" />
+    
+    </PreferenceCategory>
+   
+</PreferenceScreen>
