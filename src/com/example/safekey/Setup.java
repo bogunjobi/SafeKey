@@ -16,14 +16,19 @@ import android.widget.Toast;
 public class Setup extends Activity {
 	int i = 0;
 	Context context;
+	String contact_1, number_1, contact_2, number_2;
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setup);
 		context = this;
 		
+		
+		
 		final TextView contact1 = (TextView) findViewById(R.id.contact1);
 		final TextView contact2 = (TextView) findViewById(R.id.contact2);
+		
 		
 		
 		
@@ -91,19 +96,27 @@ public class Setup extends Activity {
 		findViewById(R.id.finish).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
+					
 					public void onClick(View view) {
-						final String contact_1 = contact1.getText().toString();
-						final String contact_2 = contact2.getText().toString();
+						//final String contact_1 = contact1.getText().toString();
+						//final String contact_2 = contact2.getText().toString();
 						SharedPreferences auth_pref = getApplicationContext().getSharedPreferences("Contacts", MODE_PRIVATE);
 						SharedPreferences.Editor editor = auth_pref.edit();
+						//Set<String> contact1 = new HashSet<String>(Arrays.asList(contact_1, number_1));
+						//Set<String> contact2 = new HashSet<String>(Arrays.asList(contact_2, number_2));
 						editor.putString("contact1", contact_1);
 						editor.putString("contact2", contact_2);
+						editor.putString("number1", number_1);
+						editor.putString("number2", number_2);
 						editor.commit();
 						
-						Intent i = new Intent(Setup.this, Main.class);
+						
+						 
+						
+						//Intent intent = new Intent(Setup.this, Main.class);
 						/*i.putExtra("contact1", contact_1);
 						i.putExtra("contact2", contact_2);*/
-						startActivity(i);
+						//startActivity(intent);
 					}
 				});
 	
@@ -111,6 +124,7 @@ public class Setup extends Activity {
 
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
 	    if (data != null) {
 	        Uri uri = data.getData();
 
@@ -139,16 +153,21 @@ public class Setup extends Activity {
 	}
 	
 	
+	
 	public void showSelectedNumber(int type, String number, String name) {
 		final TextView contact1 = (TextView) findViewById(R.id.contact1);
 		final TextView contact2 = (TextView) findViewById(R.id.contact2);
 		if (i == 0){
 			contact1.setText(name);
 			contact1.setVisibility(View.VISIBLE);
+			number_1 = number;
+			contact_1 = name;
 			i++;
 		} else if (i == 1){
 			contact2.setText(name);
 			contact2.setVisibility(View.VISIBLE);
+			number_2 = number;
+			contact_2 = name;
 			i++;
 		} else {				
 	    Toast.makeText(this, "Maximum of two emergency contacts", Toast.LENGTH_LONG).show();  

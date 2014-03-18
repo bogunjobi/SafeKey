@@ -6,9 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -20,10 +25,12 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -56,6 +63,8 @@ public class SettingsActivity extends PreferenceActivity {
 	static String password;
 	static View focusView = null;
 	public static Activity activity;
+	
+	
 	public static SharedPreferences getSharedPreferences(Context ctxt){
 		return ctxt.getSharedPreferences("Login", Context.MODE_PRIVATE);
 	}
@@ -134,6 +143,11 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		Preference pref = findPreference("enableAdmin");
 		pref.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		
+		
+		Preference ls_pref = findPreference("LockscreenImage");
+		ls_pref.setOnPreferenceClickListener(onPreferenceClick);
+		
 		
 	}
 
@@ -283,24 +297,71 @@ public class SettingsActivity extends PreferenceActivity {
 			if (preference.getKey().equals("enableAdmin") && stringValue.equals("true")){
 				showDialog((CheckBoxPreference) preference);
 			}
-		}else {
+		} 
+		else if (preference instanceof EditTextPreference) {
 			
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
 				preference.setSummary(stringValue);
 				if (preference.getKey().equals("username")){
-					SharedPreferences auth_pref = MyApplication.getAppContext().getSharedPreferences("Login", MODE_PRIVATE);
+					SharedPreferences auth_pref = activity.getSharedPreferences("Login", MODE_PRIVATE);
 					SharedPreferences.Editor editor = auth_pref.edit();
 					editor.putString("name", stringValue);
 					Log.d("d Username", stringValue);
 					editor.commit();
-				}
+		}else {
+			/*if (preference.getKey().equals("LockScreenImage")){
+				SharedPreferences sp = activity.getSharedPreferences("LockScreen", MODE_PRIVATE);
+				SharedPreferences.Editor editor = sp.edit();
+				editor.putString("img", stringValue);
+				Log.d("Pic", stringValue);
+				editor.commit();
+			}*/
+		}
 				
-			}
+	}
 			return true;
 		}
+		
 	};
-
+	
+	
+	OnPreferenceClickListener onPreferenceClick = new Preference.OnPreferenceClickListener() {
+	       public boolean onPreferenceClick(Preference preference) {
+	    	   Log.d("ALP", "Yuppies");
+	           Intent intent = new Intent();
+	           intent.setType("image/*");
+	           intent.setAction(Intent.ACTION_PICK);
+	           startActivityForResult(Intent.createChooser(intent, "Select Image"),0);
+	           return true;
+	       }
+	   };
+	
+	   
+	   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+			
+			if (resultCode == RESULT_OK && data != null) {
+			         Uri selectedImage = data.getData();
+			         String[] filePathColumn = {MediaStore.Images.Media.DATA};
+			         Cursor cursor = getContentResolver().query(selectedImage,
+			                 filePathColumn, null, null, null);
+			         cursor.moveToFirst();
+			         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			         String picturePath = cursor.getString(columnIndex);
+			         cursor.close();
+			       
+			         //store chosen image
+			         SharedPreferences ls_img = getSharedPreferences("LockScreen", Context.MODE_PRIVATE);
+			         SharedPreferences.Editor editor = ls_img.edit();
+			 		 editor.putString("img", picturePath);
+			 		 editor.commit();
+			 		 
+			        /*Bitmap btmap = BitmapFactory.bitmapFactory.decodeFile(picturePath);
+			         ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+			         imageView.setImageBitmap(btmap);*/
+				}
+			}
+	   
 	/**
 	 * Binds a preference's summary to its value. More specifically, when the
 	 * preference's value is changed, its summary (line of text below the

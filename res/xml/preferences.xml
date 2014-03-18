@@ -11,6 +11,13 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_display_name" />
+    
+     <Preference android:title="@string/pref_images"
+         		android:key='LockscreenImage' 
+         		android:summary='@string/summary_image'
+         		android:enabled="true">
+       
+    </Preference>
 
   
    <CheckBoxPreference

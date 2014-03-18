@@ -10,11 +10,9 @@
 
    <ImageView
        android:id="@+id/splash_image"
-       android:contentDescription="@+string/desc_splash"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:layout_centerHorizontal="true"
-       android:layout_centerVertical="true"
+       android:contentDescription="@+string/desc_splash"
        android:src="@drawable/splashscreen" />
 
 </RelativeLayout>
