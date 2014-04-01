@@ -113,10 +113,10 @@ public class Setup extends Activity {
 						
 						 
 						
-						//Intent intent = new Intent(Setup.this, Main.class);
+						Intent intent = new Intent(Setup.this, Main.class);
 						/*i.putExtra("contact1", contact_1);
 						i.putExtra("contact2", contact_2);*/
-						//startActivity(intent);
+						startActivity(intent);
 					}
 				});
 	

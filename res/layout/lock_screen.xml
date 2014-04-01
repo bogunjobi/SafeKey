@@ -51,7 +51,7 @@
 	    android:background="@drawable/blackbutton"
 	    android:text="@string/emergency"
 	    android:textColor="#FFFFFF" 
-	    android:visibility="invisible" />"
+	    android:visibility="invisible" />
 
 	<TextView
 	    android:id="@+id/textView1"
@@ -82,7 +82,8 @@
 	    android:gravity="center_vertical"
 	    android:background="@drawable/blackbutton"
 	    android:drawableLeft="@drawable/ic_call"
-	   android:text="Emergency call"
+	  
+	   android:text="@string/emcall"
 	   android:textColor="#FFFFFF"
 	    />
 

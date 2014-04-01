@@ -1,10 +1,6 @@
 package com.example.safekey;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -71,6 +66,8 @@ public class Main extends Activity {
 		contacts = getSharedPreferences("Contacts", Context.MODE_PRIVATE);
 		contact1 = contacts.getString("contact1", "");
 		contact2 = contacts.getString("contact2", "");
+		number1 = contacts.getString("number1", "");
+		number2 = contacts.getString("number2", "");
 		
 		/*if (!contact1.equals(null))
 			contactName1 = (String) contact1.toArray()[0];
@@ -120,15 +117,6 @@ public class Main extends Activity {
 		sep3 = (View)findViewById(R.id.separator4);
 		
 		///
-		findViewById(R.id.button1).setOnClickListener(
-				 new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						startActivity(new Intent(Main.this, LockScreen.class));						
-					}
-				});
-				
 		
 		///
 		findViewById(R.id.imageView1).setOnClickListener(
@@ -374,7 +362,7 @@ public class Main extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -382,10 +370,18 @@ public class Main extends Activity {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			startActivity(new Intent(this, SettingsActivity.class));
-			return true;
+			startActivity(new Intent(Main.this, SettingsActivity.class));
+			break;
+		case R.id.action_about:
+			break;
+			
+		case R.id.action_help:
+			break;
+		default:
+			return false;
+		
 		}
-		return false;
+		return true;
 	}
 	
 	@Override

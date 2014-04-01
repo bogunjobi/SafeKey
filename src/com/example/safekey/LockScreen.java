@@ -41,13 +41,18 @@ public class LockScreen extends Activity {
     Drawable lsImage;
     WallpaperManager wm;
     Button bn911, bn, bn1;
-    TextView emCall;
+    //TextView emCall;
     String contact1, contact2, number1, number2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-	            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
+				//WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
+	            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
+	            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+	            //WindowManager.LayoutParams.TYPE_KEYGUARD        
+	            
+	            );
 		
 		SharedPreferences sp = this.getSharedPreferences("LockScreen", MODE_PRIVATE);
 		String imgURI = sp.getString("img", "");
@@ -94,11 +99,27 @@ public class LockScreen extends Activity {
 		
 		
 		
-		
-		
-		
-		emCall = (TextView) findViewById(R.id.emCall);
-		emCall.setOnClickListener(listener);
+		final TextView emCall = (TextView)findViewById(R.id.emCall);
+		emCall.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				Log.d("Click em call", "click");
+				if (emCall.getText().toString().equals("Cancel")){
+					emCall.setText("Emergency Call");
+					emCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call, 0, 0, 0);
+					bn911.setVisibility(View.INVISIBLE);
+					bn.setVisibility(View.GONE);
+					bn1.setVisibility(View.GONE);
+				} else {
+				emCall.setText("Cancel");
+				emCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_cancel_, 0, 0, 0);
+				buttonVisibility();
+				
+				}
+			
+			}
+		}); 
 		
 		if (isActiveAdmin()){
 			//mDPM.lockNow();
@@ -138,19 +159,7 @@ public class LockScreen extends Activity {
     OnClickListener listener = new OnClickListener(){
 		@Override
 		public void onClick(View v) {
-			if (v.getId() == R.id.emCall){
-				if (emCall.getText().toString().equals("Cancel")){
-					emCall.setText("Emergency Call");
-					emCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call, 0, 0, 0);
-					bn911.setVisibility(View.INVISIBLE);
-					bn.setVisibility(View.GONE);
-					bn1.setVisibility(View.GONE);
-				} else {
-				emCall.setText("Cancel");
-				emCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_cancel_, 0, 0, 0);
-				buttonVisibility();
-				}
-			} else {
+			
 			Intent intent = new Intent(Intent.ACTION_CALL);			
 			switch(v.getId()){
 			case(R.id.emergency1):
@@ -174,9 +183,35 @@ public class LockScreen extends Activity {
 			}
 			startActivity(intent);
 		}	
-		}
+		
 	};
 	
+	
+	public void onWindowFocusChanged(boolean hasFocus) {
+	    super.onWindowFocusChanged(hasFocus);
+
+	    Intent intent = new Intent("my.action.string");
+	    Log.d("Focus debug", "Focus changed!");
+	    
+	    
+	if (hasFocus){
+		intent.putExtra("flag", "LOCKSCREEN_ENABLED"); 
+	} else {
+	    Log.d("Focus debug", "Lost focus!");
+	   
+	    intent.putExtra("flag", "LOCKSCREEN_DISABLED"); 
+	    
+	    
+	    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+	    sendBroadcast(closeDialog);
+		}
+	sendBroadcast(intent);
+	}
+	
+	    //public void onBackPressed() {
+	        // Don't allow back to dismiss.
+	     //   return;
+	    //}
 	/*OnItemSelectedListener spnListener = new OnItemSelectedListener(){
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, 

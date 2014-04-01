@@ -19,7 +19,7 @@ public class ShowDialog extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = this;
-		setContentView(R.layout.activity_show_dialog);
+		//setContentView(R.layout.activity_show_dialog);
 		
 		showAlert(this);
 
@@ -29,21 +29,22 @@ public class ShowDialog extends Activity {
 	public static void showAlert(Activity activity) {
 
         TextView title = new TextView(activity);
-        title.setText("Enter Password");
+        title.setText("Warning!");
         title.setPadding(10, 10, 10, 10);
-        title.setGravity(Gravity.CENTER);
+        //title.setGravity(Gravity.CENTER);
         //title.setTextColor(Color.WHITE);
         title.setTextSize(20);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         // builder.setTitle("Title");
+        builder.setMessage("Disabling Device Admin will lock your device");
         builder.setCustomTitle(title);
-        final EditText input = new EditText(activity);
+       /* final EditText input = new EditText(activity);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        builder.setView(input);
+        input.setLayoutParams(lp); 
+        builder.setView(input); */
 
         
         builder.setCancelable(false);

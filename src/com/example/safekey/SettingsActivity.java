@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -28,10 +31,14 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 
@@ -54,6 +61,11 @@ public class SettingsActivity extends PreferenceActivity {
 	 * as a master/detail two-pane view on tablets. When true, a single pane is
 	 * shown on tablets.
 	 */
+	
+	static String contact1;
+	static String contact2;
+	static String number1;
+	static String number2;
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 	static int can_play;
 	static final int PLAY_NOW = 0;
@@ -63,6 +75,8 @@ public class SettingsActivity extends PreferenceActivity {
 	static String password;
 	static View focusView = null;
 	public static Activity activity;
+	
+	static CheckBoxPreference pref;
 	
 	
 	public static SharedPreferences getSharedPreferences(Context ctxt){
@@ -82,6 +96,15 @@ public class SettingsActivity extends PreferenceActivity {
 	    setupSimplePreferencesScreen();
 	    
 	}
+	
+	
+	protected void onStop(Bundle savedInstanceState) {
+		super.onStop();
+
+		pref.setChecked(false);
+	    
+	}
+	
 
 	/**
 	 * Shows the simplified settings UI if the device configuration if the
@@ -99,8 +122,16 @@ public class SettingsActivity extends PreferenceActivity {
 		SharedPreferences auth_pref = SettingsActivity.getSharedPreferences(SettingsActivity.this.getApplicationContext());
 		String name = auth_pref.getString("name", null);
 		password = auth_pref.getString("password", null);	
+		
+		SharedPreferences contacts = getSharedPreferences("Contacts", Context.MODE_PRIVATE);
+		contact1 = contacts.getString("contact1", "");
+		contact2 = contacts.getString("contact2", "");
+		number1 = contacts.getString("number1", "");
+		number2 = contacts.getString("number2", "");
+		
 		addPreferencesFromResource(R.xml.preferences);
 			
+		
 		
 		// Add  preferences.
 		EditTextPreference gen = (EditTextPreference) findPreference("username");
@@ -141,14 +172,37 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_notification);*/
 		
 		
-		Preference pref = findPreference("enableAdmin");
+		pref = (CheckBoxPreference) findPreference("enableAdmin");
 		pref.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 		
 		
 		Preference ls_pref = findPreference("LockscreenImage");
 		ls_pref.setOnPreferenceClickListener(onPreferenceClick);
 		
+		Preference uninstall = findPreference("uninstall");
+		uninstall.setOnPreferenceClickListener(onPreferenceClick);
 		
+		Preference contact_1 = findPreference("contact1");
+		Preference contact_2 = findPreference("contact2");
+		PreferenceCategory em_contacts = (PreferenceCategory) findPreference("econtacts");
+		if (contact1.equals("")){
+			getPreferenceScreen().removePreference(em_contacts);				
+		} else {
+			contact_1.setTitle(contact1);
+			contact_1.setOnPreferenceClickListener(onPreferenceClick);
+			contact_2.setTitle(contact2);
+			contact_2.setOnPreferenceClickListener(onPreferenceClick);
+		}			
+		if (contact2.equals("")){
+			getPreferenceScreen().removePreference(contact_2);		
+		} else {
+			contact_2.setTitle(contact2);
+			contact_2.setOnPreferenceClickListener(onPreferenceClick);
+		}
+		
+		
+		Preference demo = findPreference("Lockscreen");
+		demo.setOnPreferenceClickListener(l);
 	}
 
 	
@@ -222,6 +276,22 @@ public class SettingsActivity extends PreferenceActivity {
 	 			if (input.getText().toString().equals(password)){
 	 				preference.setChecked(true);
 	 				wantToCloseDialog = true;
+	 				final NumberFormat formatter = new DecimalFormat("00");
+	 				new CountDownTimer(180000, 1000){
+	 					@Override
+	 					public void onFinish() {
+	 						pref.setSummary("Disabling Admin...");
+	 						pref.setChecked(false);
+	 						pref.setSummary("");
+	 					}
+
+	 					@Override
+	 					public void onTick(long millisUntilFinished) {
+	 						pref.setSummary("Admin will be disabled in: " + millisUntilFinished / 60000 + ":" + formatter.format(Math.round(millisUntilFinished % 60000)/1000));
+	 					}
+	 				}.start(); 				
+	 				
+	 				
 	 				 			
 	 			}else{
 	 				Log.d("Stringy", input.getText().toString());
@@ -296,7 +366,9 @@ public class SettingsActivity extends PreferenceActivity {
 			Log.d("Val", stringValue);
 			if (preference.getKey().equals("enableAdmin") && stringValue.equals("true")){
 				showDialog((CheckBoxPreference) preference);
+				
 			}
+			
 		} 
 		else if (preference instanceof EditTextPreference) {
 			
@@ -328,15 +400,36 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	OnPreferenceClickListener onPreferenceClick = new Preference.OnPreferenceClickListener() {
 	       public boolean onPreferenceClick(Preference preference) {
-	    	   Log.d("ALP", "Yuppies");
-	           Intent intent = new Intent();
-	           intent.setType("image/*");
-	           intent.setAction(Intent.ACTION_PICK);
-	           startActivityForResult(Intent.createChooser(intent, "Select Image"),0);
-	           return true;
+	    	   if (preference.getKey().equals("LockscreenImage")){
+	    		   Intent intent = new Intent();
+	    		   intent.setType("image/*");
+	    		   intent.setAction(Intent.ACTION_PICK);
+	    		   startActivityForResult(Intent.createChooser(intent, "Select Image"),0);
+	    		   return true;
+	    	   } else if (preference.getKey().equals("uninstall")){
+	    		   DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+	    		   ComponentName adminReceiver = new ComponentName(SettingsActivity.this, MyAdmin.class);
+	    		   mDPM.removeActiveAdmin(adminReceiver);
+	    		   Uri uri = Uri.fromParts("package", getPackageName(), null);
+	    		   startActivity(new Intent(Intent.ACTION_DELETE, uri));
+	    		   return true;
+	    	   } else if (preference.getKey().equals("contact1")){
+	    		   
+	    		   return true;
+	    	   }
+	    	   return false;
 	       }
 	   };
 	
+	   OnPreferenceClickListener l = new Preference.OnPreferenceClickListener() {
+	       public boolean onPreferenceClick(Preference preference) {
+	  
+						startActivity(new Intent(SettingsActivity.this, LockScreen.class));
+						return true;						
+					}
+				};
+				
+		
 	   
 	   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 			
@@ -361,6 +454,7 @@ public class SettingsActivity extends PreferenceActivity {
 			         imageView.setImageBitmap(btmap);*/
 				}
 			}
+	   
 	   
 	/**
 	 * Binds a preference's summary to its value. More specifically, when the
@@ -415,6 +509,25 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onBackPressed();
 		finish();
 	}
+	
+	
+	public class MyCount extends CountDownTimer {
+		public MyCount(long startTime, long interval) {
+			super(startTime, interval);
+		}
+		
+		@Override
+        public void onFinish() {
+        	pref.setSummary("Disabling Admin...");
+        	pref.setChecked(false);
+       }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            pref.setSummary("Left: " + millisUntilFinished / 1000);
+        }
+    }
+	
 	
 
 	
