@@ -24,4 +24,15 @@
          <item>ed</item>
          <item>del</item>
         </string-array>
+        
+     <string-array name="spinner">
+        <item>Beginning of Time</item>
+        <item>1 year</item>
+        <item>6 months</item>
+        <item>1 month</item>
+        <item>1 week</item>
+        <item>1 day</item>
+        <item>Custom</item>
+        
+    </string-array>
 </resources>

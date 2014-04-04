@@ -39,5 +39,7 @@
     <string name="pref_images">Customize Lock Screen</string>
     <string name="emcall">Emergency call</string>
     <string name="title_activity_dadisabled">DADisabled</string>
+    <string name="title_activity_driver_tracking">Driver Tracking</string>
+    <string name="dtprompt"> View Information from</string>
 
 </resources>

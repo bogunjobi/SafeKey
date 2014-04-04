@@ -1,6 +1,8 @@
 package com.example.safekey;
 
 
+import java.util.Calendar;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,7 +10,9 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,8 +21,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,23 +35,31 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class Main extends Activity {
 
+	public static SQLiteDatabase userDB = null;
+	public final String db_name = "userTracker";
+	public final String table_name = "userTracker";
+	
+	final String TAG = "Main";
+	
 	View callingView = null;
+		
 	SharedPreferences contacts = null;
+	SharedPreferences admin = null;
 	Editor editor = null;
-	String contact1;
-	String contact2;
-	String number1;
-	String number2;
-	TextView mContact1;
-	TextView mContact2;
-	TextView mAddContact;
-	View sep1;
-	View sep2;
-	View sep3;	
+	
+	boolean adminEnabled = false;
+	
+	//emergency contact info
+	String contact1, contact2, number1, number2;
+	
+	//textviews and separators
+	TextView mContact1, mContact2, mAddContact, view;
+	View sep1, sep2, sep3;	
 	
 	//??
 	DevicePolicyManager mDPM;
@@ -61,7 +75,9 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);		
 		
-				
+		startBT();
+		
+		
 		//load emergency contact information
 		contacts = getSharedPreferences("Contacts", Context.MODE_PRIVATE);
 		contact1 = contacts.getString("contact1", "");
@@ -69,12 +85,9 @@ public class Main extends Activity {
 		number1 = contacts.getString("number1", "");
 		number2 = contacts.getString("number2", "");
 		
-		/*if (!contact1.equals(null))
-			contactName1 = (String) contact1.toArray()[0];
-		else contactName1 = "";
-		if (!contact2.equals(null))
-			contactName2 = (String) contact2.toArray()[0];
-		else contactName2 = "";*/
+		admin = getSharedPreferences("admin", Context.MODE_PRIVATE);
+		adminEnabled = admin.getBoolean("adminEnabled", false);
+		
 		
 		
 		//load user image
@@ -112,13 +125,17 @@ public class Main extends Activity {
 		mContact1 = (TextView) findViewById(R.id.contacts2);
 		mContact2 = (TextView) findViewById(R.id.contacts3);
 		mAddContact = (TextView) findViewById(R.id.addcontacts);
+		view = (TextView) findViewById(R.id.view);
+		
 		sep1 = (View)findViewById(R.id.separator2);
 		sep2 = (View)findViewById(R.id.separator3);
 		sep3 = (View)findViewById(R.id.separator4);
 		
-		///
-		
-		///
+		if (adminEnabled){
+			mContact1.setTextColor(Color.BLACK);
+			mContact2.setTextColor(Color.BLACK);
+			mAddContact.setTextColor(Color.BLACK);
+		}
 		findViewById(R.id.imageView1).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -151,12 +168,28 @@ public class Main extends Activity {
 		
 		
 		mContact1.setOnClickListener(tvlistener);
-		mContact2.setOnClickListener(tvlistener);
+		mContact2.setOnClickListener(tvlistener);	
+		
+		view.setOnClickListener(tvlistener);
+		
+			/*new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(Main.this, DriverTracking.class));					
+					
+				}
+			}); */
+				
 		
 		mAddContact.setOnClickListener(
 			new View.OnClickListener() {				
 				@Override
 				public void onClick(View v) {
+					if (!adminEnabled){
+						Toast.makeText(Main.this, "Tip: Enable Admin to add contacts", Toast.LENGTH_SHORT).show();
+						return;
+					}
 					if (mContact1.getVisibility() != View.VISIBLE){
 						
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -210,7 +243,14 @@ public class Main extends Activity {
 	OnClickListener tvlistener = new OnClickListener(){
 		@Override
 		public void onClick(View v) {
-			showPopup(v);
+			if (v.getId() == mContact1.getId() || v.getId() == mContact2.getId()){
+				if (adminEnabled)
+					showPopup(v);
+				else 
+					Toast.makeText(Main.this, "Tip: Enable Admin to edit or delete contacts", Toast.LENGTH_SHORT).show();
+			} else if (v.getId() == view.getId()){
+				startActivity(new Intent(Main.this, DriverTracking.class));
+			}
 		}	
 	};
 	
@@ -291,10 +331,7 @@ public class Main extends Activity {
 			if (resultCode == RESULT_CANCELED) {
 				alertDialog.show();
 		        return;
-		    } else {
-		    	Intent intent = new Intent(this, Main.class);
-				startActivity(intent);
-		    }
+		    } 
 		}	
 		else{
 		
@@ -359,6 +396,17 @@ public class Main extends Activity {
 	    popup.show();
 	}
 	
+	public void startBT(){
+		Calendar cal = Calendar.getInstance();
+		Intent intent = new Intent(this, BTConnection.class);
+		
+		PendingIntent pintent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		Log.d("Main",String.valueOf(cal.getTimeInMillis()));
+		alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 15000, pintent); 
+		startService(intent);	
+	}
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -384,10 +432,14 @@ public class Main extends Activity {
 		return true;
 	}
 	
+	//TODO: Only override if previous is setup?
 	@Override
 	public void onBackPressed() {
 		//to ensure that users cannot go back to the setup page
-		
+		finish();
 	}
-
+	
+	
+	
+			  
 }

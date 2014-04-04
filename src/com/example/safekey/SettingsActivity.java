@@ -10,11 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,12 +28,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
@@ -77,12 +70,16 @@ public class SettingsActivity extends PreferenceActivity {
 	public static Activity activity;
 	
 	static CheckBoxPreference pref;
+	static SharedPreferences admin;
+	private static CountDownTimer cdt;
 	
-	
+	static SharedPreferences.Editor editor;
 	public static SharedPreferences getSharedPreferences(Context ctxt){
 		return ctxt.getSharedPreferences("Login", Context.MODE_PRIVATE);
 	}
 	
+	
+    
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -122,6 +119,9 @@ public class SettingsActivity extends PreferenceActivity {
 		SharedPreferences auth_pref = SettingsActivity.getSharedPreferences(SettingsActivity.this.getApplicationContext());
 		String name = auth_pref.getString("name", null);
 		password = auth_pref.getString("password", null);	
+		
+		admin = activity.getSharedPreferences("admin", Context.MODE_PRIVATE);
+		
 		
 		SharedPreferences contacts = getSharedPreferences("Contacts", Context.MODE_PRIVATE);
 		contact1 = contacts.getString("contact1", "");
@@ -275,14 +275,20 @@ public class SettingsActivity extends PreferenceActivity {
 	 			Log.d("Passwd", password);
 	 			if (input.getText().toString().equals(password)){
 	 				preference.setChecked(true);
+	 				editor = admin.edit();
+	 				editor.putBoolean("adminEnabled", true);
+	 				editor.commit();
 	 				wantToCloseDialog = true;
 	 				final NumberFormat formatter = new DecimalFormat("00");
-	 				new CountDownTimer(180000, 1000){
+	 				cdt = new CountDownTimer(180000, 1000){
 	 					@Override
 	 					public void onFinish() {
 	 						pref.setSummary("Disabling Admin...");
 	 						pref.setChecked(false);
 	 						pref.setSummary("");
+	 						editor = admin.edit();
+	 		 				editor.putBoolean("adminEnabled", false);
+	 		 				editor.commit();
 	 					}
 
 	 					@Override
@@ -365,8 +371,13 @@ public class SettingsActivity extends PreferenceActivity {
 			Log.d("Pref", preference.getKey());
 			Log.d("Val", stringValue);
 			if (preference.getKey().equals("enableAdmin") && stringValue.equals("true")){
-				showDialog((CheckBoxPreference) preference);
-				
+				showDialog((CheckBoxPreference) preference);				
+			} else if (preference.getKey().equals("enableAdmin") && stringValue.equals("false")){
+				cdt.cancel();
+				preference.setSummary("");
+				editor = admin.edit();
+	 			editor.putBoolean("adminEnabled", false);
+	 			editor.commit();
 			}
 			
 		} 
@@ -409,6 +420,7 @@ public class SettingsActivity extends PreferenceActivity {
 	    	   } else if (preference.getKey().equals("uninstall")){
 	    		   DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
 	    		   ComponentName adminReceiver = new ComponentName(SettingsActivity.this, MyAdmin.class);
+	    		   mDPM.resetPassword(" ", 0);
 	    		   mDPM.removeActiveAdmin(adminReceiver);
 	    		   Uri uri = Uri.fromParts("package", getPackageName(), null);
 	    		   startActivity(new Intent(Intent.ACTION_DELETE, uri));
@@ -529,6 +541,6 @@ public class SettingsActivity extends PreferenceActivity {
     }
 	
 	
-
+	
 	
 }

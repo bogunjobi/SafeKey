@@ -63,6 +63,7 @@
         android:layout_below="@+id/separator2"
         android:layout_marginTop="5dp"
         android:visibility="gone"
+        android:textColor="@android:color/darker_gray"
         android:gravity = "center_vertical"
         android:drawableRight="@drawable/ic_dropdown"
         android:textStyle="bold"  
@@ -86,6 +87,7 @@
         android:layout_marginTop="5dp"
         android:gravity = "center_vertical"
         android:visibility="gone"
+        android:textColor="@android:color/darker_gray"
         android:drawableRight="@drawable/ic_dropdown"
         android:textStyle="bold"
        
@@ -109,6 +111,7 @@
         android:gravity = "center_vertical"
         android:text="@string/addContacts"
         android:visibility="gone"
+        android:textColor="@android:color/darker_gray"
         android:drawableLeft="@drawable/ic_add_main"
         android:textStyle="bold"
         />
