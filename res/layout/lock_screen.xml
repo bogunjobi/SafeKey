@@ -3,65 +3,71 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.safekey.LockScreen"
-    tools:ignore="MergeRootFrame" 
+    tools:context="com.vuseniordesign.safekey.LockScreen"
     
     >
     
-    
-    <Button
-        android:id="@+id/emergency2"
-        android:layout_width="144dp"
-        android:drawableLeft="@drawable/ic_call"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        android:layout_above="@+id/emergency3"
-        android:textColor="#FFFFFF"
-        android:alpha="0.7"
-        android:visibility="gone"
-        android:background="@drawable/blackbutton"
-         />
-	<Button
-        android:id="@+id/emergency3"
-        android:layout_width="144dp"
-        android:drawableLeft="@drawable/ic_call"
-        
-        android:layout_above="@+id/emergency1"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        
-        android:alpha="0.7"
-        android:background="@drawable/blackbutton"
-        android:textColor="#FFFFFF"
+    <ImageView 
+        android:id="@+id/imView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone"
         
-	    
-        />
+       />
+
 	<Button
 	    android:id="@+id/emergency1"
 	    android:layout_width="144dp"
 	    android:drawableLeft="@drawable/ic_call"
 	    android:layout_height="wrap_content"
 	    android:layout_centerHorizontal="true"
-	    android:layout_marginBottom="15dp"
+	    android:layout_above="@+id/emergency2"        
 	    android:alpha="0.7"
-	    android:layout_alignParentBottom="true"	    
 	    android:background="@drawable/blackbutton"
 	    android:text="@string/emergency"
-	    android:textColor="#FFFFFF" 
-	    android:visibility="invisible" />
+	    android:textColor="#FFFFFF"
+	    android:visibility="invisible" 
+	     />
 
+	
+	 <Button
+        android:id="@+id/emergency2"
+        android:layout_width="144dp"
+        android:drawableLeft="@drawable/ic_call"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/emergency3"
+        android:textColor="#FFFFFF"
+        android:alpha="0.7"
+        android:visibility="invisible"
+        android:background="@drawable/blackbutton"
+         />
+	 
+	<Button
+        android:id="@+id/emergency3"
+        android:layout_width="144dp"
+        android:drawableLeft="@drawable/ic_call"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"        
+        android:alpha="0.7"
+        android:background="@drawable/blackbutton"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible"
+         android:layout_alignParentBottom="true"
+	          
+        
+	    
+        />
 	<TextView
 	    android:id="@+id/textView1"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginLeft="20dp"
 	    android:layout_marginRight="20dp"
-	    android:layout_centerVertical="true"
 	    android:alpha="0.7"
-	  	android:gravity="center_vertical"
+	  	android:gravity="center"
+	  	android:layout_centerInParent="true"
 	    android:textSize="15sp"
 	    android:drawableLeft="@drawable/ic_alert"
 	    android:background="@drawable/blackbutton"
@@ -79,7 +85,6 @@
 	    android:layout_centerHorizontal="true"
 	    android:alpha="0.7"
 	    android:textSize="15sp"
-	    android:gravity="center_vertical"
 	    android:background="@drawable/blackbutton"
 	    android:drawableLeft="@drawable/ic_call"
 	  

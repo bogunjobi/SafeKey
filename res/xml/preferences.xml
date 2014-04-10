@@ -38,25 +38,6 @@
     <!-- DEMO ENDED -->
     
     
-    <PreferenceCategory
-        android:key="econtacts"
-        android:title="Emergency Contacts"  >
-        
-          <ListPreference 
-         		android:key="contact1" 
-         		android:dependency="enableAdmin"
-         		android:entries="@array/menu"
-        		android:entryValues="@array/menuVal"
-         		/>
-          
-           <ListPreference 
-         		android:key="contact2" 
-         		android:dependency="enableAdmin"
-         		android:entries="@array/menu"
-        		android:entryValues="@array/menuVal"
-         		/>
-        
-     </PreferenceCategory>
    
 	  <!-- Passwords PreferenceCategory -->
 	 
@@ -68,7 +49,7 @@
 	    android:dependency="enableAdmin"
 	    android:key="uninstall"/>
         
-    <com.example.safekey.SK_DialogPreference
+    <com.vuseniordesign.safekey.SK_DialogPreference
         android:title="Change Password"
         android:dependency="enableAdmin"
         android:key = "pwd"

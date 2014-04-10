@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+   
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    
+    
+     <Preference android:title="@string/about"
+         		android:key='about' 
+         		/>
+         		
+         
+     <Preference android:title="@string/faq"
+         		android:key='faq'
+         		/>
+      
+      <Preference android:title="@string/issue"
+         		android:key='issue'
+         		android:summary='Mailto: afakeemail@gmail.com' 
+         		/>
+      
+      <Preference android:title="@string/version"
+         		android:key='version'
+         		android:summary='0.1.0 Beta' 
+         		/>
+        
+       
+    
+   </PreferenceScreen>

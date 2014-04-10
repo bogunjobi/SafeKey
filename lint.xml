@@ -3,4 +3,8 @@
     <issue id="InlinedApi">
         <ignore path="src/com/example/safekey/LockScreen.java" />
     </issue>
+    <issue id="SimpleDateFormat">
+        <ignore path="src/com/example/safekey/DriverTracking.java" />
+        <ignore path="src/com/vuseniordesign/safekey/GraphFragment.java" />
+    </issue>
 </lint>
