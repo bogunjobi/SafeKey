@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,7 +23,6 @@ import android.preference.Preference;
 import android.preference.EditTextPreference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -32,14 +30,9 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
-
-
-import com.vuseniordesign.safekey.LoginActivity.UserLoginTask;
 
 
 
@@ -77,8 +70,9 @@ public class SettingsActivity extends PreferenceActivity {
 	static View focusView = null;
 	public static Activity activity;
 	
-	static CheckBoxPreference pref;
-	static SharedPreferences admin;
+	static CheckBoxPreference pref, missedCalls;
+	static ListPreference message, reply;
+	static SharedPreferences admin, settings;
 	private static CountDownTimer cdt;
 	
 	static SharedPreferences.Editor editor;
@@ -160,28 +154,24 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		
 		PreferenceManager.setDefaultValues(SettingsActivity.this, R.xml.preferences, false);
-		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+		
+		message = (ListPreference)findPreference("textreply");
+		bindPreferenceSummaryToValue(message);
+		
+		missedCalls = (CheckBoxPreference) findPreference("missedcalls");
+		missedCalls.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		
+		reply = (ListPreference)findPreference("sendto");
+		bindPreferenceSummaryToValue(reply);
+		
+		
+		
 		bindPreferenceSummaryToValue(gen);
 		
 		//first time initialization ONLY
 		
 		gen.setSummary(name);
 		gen.getEditText().setText(name);
-		
-		
-		
-		
-		
-		//Add password preferences
-		/*PreferenceCategory pwdHeader = new PreferenceCategory(this);
-		pwdHeader.setTitle("Password");
-		getPreferenceScreen().addPreference(pwdHeader);
-		addPreferencesFromResource(R.xml.pref_password);
-		
-		PreferenceCategory dhHeader = new PreferenceCategory(this);
-		dhHeader.setTitle("Driver History");
-		getPreferenceScreen().addPreference(dhHeader);
-		addPreferencesFromResource(R.xml.pref_notification);*/
 		
 		
 		pref = (CheckBoxPreference) findPreference("enableAdmin");
@@ -194,7 +184,8 @@ public class SettingsActivity extends PreferenceActivity {
 		Preference uninstall = findPreference("uninstall");
 		uninstall.setOnPreferenceClickListener(onPreferenceClick);
 		
-		
+		Preference help = findPreference("help");
+		help.setOnPreferenceClickListener(onPreferenceClick);
 		
 		
 		Preference demo = findPreference("Lockscreen");
@@ -364,22 +355,42 @@ public class SettingsActivity extends PreferenceActivity {
 				preference
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
 								: null);
+				settings = activity.getSharedPreferences("settings", Context.MODE_PRIVATE);
+				
+				if (preference.getKey().equals("sendto")){
+					editor = settings.edit();
+	 				editor.putString("replyto", (String) ((ListPreference) preference).getEntry());	
+	 				editor.commit();
+				} else if (preference.getKey().equals("textreply")){
+					editor = settings.edit();
+	 				editor.putString("textmessage", (String) ((ListPreference) preference).getEntry());
+	 				editor.commit();
+				}
+				
 		} else if (preference instanceof CheckBoxPreference){
 			Log.d("Pref", preference.getKey());
 			Log.d("Val", stringValue);
-			if (preference.getKey().equals("enableAdmin") && stringValue.equals("true")){
+			if (preference.getKey().equals("enableAdmin")){
+				if (stringValue.equals("true")){
 				showDialog((CheckBoxPreference) preference);				
-			} else if (preference.getKey().equals("enableAdmin") && stringValue.equals("false")){
+				} else if (stringValue.equals("false")){
 				if (!timerfinished && cdt != null){
 					cdt.cancel();
 					//cdt.onFinish();
 				}
+			}
 				preference.setSummary("");
 				editor = admin.edit();
-	 			editor.putBoolean("adminEnabled", false);
-	 			editor.commit();
+	 			editor.putBoolean("adminEnabled", false);	 			
+			} else if (preference.getKey().equals("missedcalls")){
+				settings = activity.getSharedPreferences("settings", Context.MODE_PRIVATE);
+				editor = settings.edit();
+				if (stringValue.equals("true"))
+						editor.putBoolean("missedcalls", true);	 
+				else editor.putBoolean("missedcalls", false);
+				
 			}
-			
+			editor.commit();
 		} 
 		else if (preference instanceof EditTextPreference) {
 			
@@ -421,7 +432,11 @@ public class SettingsActivity extends PreferenceActivity {
 	    		   
 	    		   uninstallApp newTask = new uninstallApp();
 	   				newTask.execute((Void) null);
-	    		   
+	    		   return true;
+	    	   } else if(preference.getKey().equals("help")){
+	    		   Intent intent = new Intent(SettingsActivity.this, Help.class);
+	    		   startActivity(intent);
+	    		   return true;
 	    	   }
 	    		   /*DevicePolicyManager mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
 	    		   ComponentName adminReceiver = new ComponentName(SettingsActivity.this, MyAdmin.class);

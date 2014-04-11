@@ -9,16 +9,18 @@ package com.vuseniordesign.safekey;
 
 public final class R {
     public static final class array {
-        public static final int freqVal=0x7f050001;
-        public static final int frequency=0x7f050000;
-        public static final int menu=0x7f050002;
-        public static final int menuVal=0x7f050003;
-        public static final int pref_example_list_titles=0x7f050006;
-        public static final int pref_example_list_values=0x7f050007;
-        public static final int pref_sync_frequency_titles=0x7f050008;
-        public static final int pref_sync_frequency_values=0x7f050009;
-        public static final int spinner=0x7f050004;
-        public static final int spinner_pos=0x7f050005;
+        public static final int menu=0x7f050004;
+        public static final int menuVal=0x7f050005;
+        public static final int pref_example_list_titles=0x7f050008;
+        public static final int pref_example_list_values=0x7f050009;
+        public static final int pref_sync_frequency_titles=0x7f05000a;
+        public static final int pref_sync_frequency_values=0x7f05000b;
+        public static final int sendVal=0x7f050003;
+        public static final int sendto=0x7f050002;
+        public static final int spinner=0x7f050006;
+        public static final int spinner_pos=0x7f050007;
+        public static final int textVal=0x7f050001;
+        public static final int textreply=0x7f050000;
     }
     public static final class attr {
     }
@@ -69,33 +71,34 @@ public final class R {
         public static final int splashscreen=0x7f02001c;
     }
     public static final class id {
-        public static final int action_forgot_password=0x7f0a003d;
-        public static final int action_help=0x7f0a003e;
-        public static final int action_settings=0x7f0a003c;
+        public static final int action_forgot_password=0x7f0a003f;
+        public static final int action_help=0x7f0a0040;
+        public static final int action_settings=0x7f0a003e;
         public static final int add_contacts=0x7f0a000e;
-        public static final int addcontacts=0x7f0a002e;
-        public static final int all=0x7f0a0018;
-        public static final int button1=0x7f0a0034;
+        public static final int addcontacts=0x7f0a0030;
+        public static final int all=0x7f0a0017;
+        public static final int button1=0x7f0a0036;
         public static final int contact1=0x7f0a000f;
         public static final int contact2=0x7f0a0010;
         public static final int contacts=0x7f0a0029;
-        public static final int contacts1=0x7f0a002a;
-        public static final int contacts2=0x7f0a002b;
-        public static final int contacts3=0x7f0a002c;
+        public static final int contacts1=0x7f0a002b;
+        public static final int contacts2=0x7f0a002c;
+        public static final int contacts3=0x7f0a002e;
         public static final int container=0x7f0a0000;
-        public static final int custom=0x7f0a001c;
-        public static final int delete=0x7f0a003b;
-        public static final int edit=0x7f0a003a;
+        public static final int custom=0x7f0a001b;
+        public static final int delete=0x7f0a003d;
+        public static final int edit=0x7f0a003c;
         public static final int emCall=0x7f0a0026;
         public static final int emergency1=0x7f0a0022;
         public static final int emergency2=0x7f0a0023;
         public static final int emergency3=0x7f0a0024;
         public static final int endDate=0x7f0a0020;
+        public static final int endHeader=0x7f0a001f;
         public static final int finish=0x7f0a0012;
         public static final int graph1=0x7f0a0004;
         public static final int graph2=0x7f0a0005;
         public static final int hello_name=0x7f0a0027;
-        public static final int history=0x7f0a002f;
+        public static final int history=0x7f0a0031;
         public static final int imView=0x7f0a0021;
         public static final int imageView1=0x7f0a0028;
         public static final int layout=0x7f0a0001;
@@ -103,35 +106,36 @@ public final class R {
         public static final int login_form=0x7f0a0008;
         public static final int login_status=0x7f0a0006;
         public static final int login_status_message=0x7f0a0007;
-        public static final int month=0x7f0a001a;
+        public static final int month=0x7f0a0019;
         public static final int name=0x7f0a0009;
-        public static final int newpwd=0x7f0a0036;
-        public static final int newpwd1=0x7f0a0037;
+        public static final int newpwd=0x7f0a0038;
+        public static final int newpwd1=0x7f0a0039;
         public static final int next=0x7f0a000c;
-        public static final int oldpwd=0x7f0a0035;
-        public static final int pager=0x7f0a0038;
-        public static final int pager_title_strip=0x7f0a0039;
+        public static final int oldpwd=0x7f0a0037;
+        public static final int pager=0x7f0a003a;
+        public static final int pager_title_strip=0x7f0a003b;
         public static final int password=0x7f0a000a;
-        public static final int radiogrp=0x7f0a0017;
+        public static final int radiogrp=0x7f0a0016;
         public static final int rgrpheader=0x7f0a0015;
         public static final int rootlayout=0x7f0a0014;
         public static final int separator=0x7f0a000d;
-        public static final int separator1=0x7f0a0016;
-        public static final int separator2=0x7f0a001d;
-        public static final int separator3=0x7f0a001f;
-        public static final int separator4=0x7f0a002d;
-        public static final int separator5=0x7f0a0030;
-        public static final int separator6=0x7f0a0032;
-        public static final int share=0x7f0a0033;
+        public static final int separator1=0x7f0a002a;
+        public static final int separator2=0x7f0a001c;
+        public static final int separator3=0x7f0a002d;
+        public static final int separator4=0x7f0a002f;
+        public static final int separator5=0x7f0a0032;
+        public static final int separator6=0x7f0a0034;
+        public static final int share=0x7f0a0035;
         public static final int skip=0x7f0a0011;
         public static final int spinner=0x7f0a0003;
         public static final int splash_image=0x7f0a0013;
-        public static final int startDate=0x7f0a001e;
+        public static final int start=0x7f0a001e;
+        public static final int startHeader=0x7f0a001d;
         public static final int textView1=0x7f0a0025;
         public static final int tvPrompt=0x7f0a0002;
-        public static final int view=0x7f0a0031;
-        public static final int week=0x7f0a001b;
-        public static final int year=0x7f0a0019;
+        public static final int view=0x7f0a0033;
+        public static final int week=0x7f0a001a;
+        public static final int year=0x7f0a0018;
     }
     public static final class layout {
         public static final int activity_dadisabled=0x7f030000;
@@ -292,8 +296,7 @@ public final class R {
         public static final int device_admin=0x7f040000;
         public static final int helppref=0x7f040001;
         public static final int pref_headers=0x7f040002;
-        public static final int pref_notification=0x7f040003;
-        public static final int pref_password=0x7f040004;
-        public static final int preferences=0x7f040005;
+        public static final int pref_password=0x7f040003;
+        public static final int preferences=0x7f040004;
     }
 }

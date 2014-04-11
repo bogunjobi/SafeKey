@@ -2,6 +2,7 @@ package com.vuseniordesign.safekey;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 
@@ -50,7 +51,7 @@ public class LockScreen extends Activity {
 	
 	final String TAG = "LockScreen"; 
     // Interaction with the DevicePolicyManager
-	AudioManager audiomanager;
+	static AudioManager audiomanager;
     DevicePolicyManager mDPM;
     ComponentName mDeviceAdminSample;
     static Context context;
@@ -78,8 +79,7 @@ public class LockScreen extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		serviceIntent = new Intent(this, OverlayService.class);
-		startService(serviceIntent);
+		
 		
 		
 		
@@ -182,7 +182,9 @@ public class LockScreen extends Activity {
 	
 		context = this;
 		
-		muteDeviceStreams(true);
+		audiomanager =(AudioManager)LockScreen.this.getSystemService(Context.AUDIO_SERVICE);
+	 	
+		this.muteDeviceStreams(true);
 		
 		sp = this.getSharedPreferences("Contacts", MODE_PRIVATE);
 		contact1 = sp.getString("contact1", "");
@@ -241,6 +243,8 @@ public class LockScreen extends Activity {
             }, 4000);	
 	        
 		}
+		
+		
 	        
 	}
 	
@@ -254,8 +258,7 @@ public class LockScreen extends Activity {
     }*/
 	
 	private void muteDeviceStreams(boolean bool){
-		audiomanager =(AudioManager)LockScreen.this.getSystemService(Context.AUDIO_SERVICE);
-	 	audiomanager.setStreamMute(AudioManager.STREAM_ALARM, bool);
+		audiomanager.setStreamMute(AudioManager.STREAM_ALARM, bool);
 	 	audiomanager.setStreamMute(AudioManager.STREAM_MUSIC, bool);
 		audiomanager.setStreamMute(AudioManager.STREAM_RING, bool);
 		audiomanager.setStreamMute(AudioManager.STREAM_NOTIFICATION, bool);
@@ -282,10 +285,14 @@ public class LockScreen extends Activity {
         super.onPause();
         //enabled = false;
         if (!this.isFinishing()){
-        	isActive = false;
-            Log.d("LOCKSCREEN", "LOCKSCREEN PAUSED");
-            //serviceIntent = new Intent(this, OverlayService.class);
-    		//startService(serviceIntent);
+        	
+        	serviceIntent = new Intent(this, OverlayService.class);
+        	startService(serviceIntent);	
+        	      isActive = false;
+        	    
+        	  
+        	Log.d("LOCKSCREEN", "LOCKSCREEN PAUSED");
+           
             
             //toggleService();
     		
@@ -315,19 +322,19 @@ public class LockScreen extends Activity {
 		enabled = true;
 		isActive = true;
 	    registerReceiver(broadcastReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
-	    //if (serviceIntent != null)
-	    	//stopService(serviceIntent);
+	    if (serviceIntent != null)
+	    	stopService(serviceIntent);
 	    
 	    //toggleService();
 	    if (isActiveAdmin()){
 			
-			//lock the screen after 9 seconds
+			/*//lock the screen after 9 seconds
 			new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mDPM.lockNow();
                 }
-            }, 9000);	
+            }, 9000);	*/
 			
 	    }
 	        
@@ -342,6 +349,8 @@ public class LockScreen extends Activity {
 	  enabled = false;
 	  isActive = false;
 	  
+	  this.muteDeviceStreams(false);
+	  
 	  unregisterReceiver(broadcastReceiver);
 	  mHomeKeyLocker.unlock();
       mHomeKeyLocker = null;
@@ -351,7 +360,8 @@ public class LockScreen extends Activity {
       Log.d(TAG, currentDate);
 	  userDB.add(currentDate, duration, userTracker);
 	  
-	  stopService(serviceIntent);
+	  if (serviceIntent != null)
+		  stopService(serviceIntent);
       
       //Intent broadcast = new Intent("com.vuseniordesign.safekey.LOCKSCREEN_DISABLED");
 	  //sendBroadcast(broadcast);

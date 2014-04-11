@@ -37,19 +37,50 @@
      
     <!-- DEMO ENDED -->
     
+    <PreferenceCategory
+        android:title="Incoming Calls"  >
+    
+	     <!--
+         A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked.
+         -->
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="missedcalls"
+        android:title="Reply missed calls with SMS" />
+    
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="missedcalls"
+        android:entries="@array/sendto"
+        android:entryValues="@array/sendVal"
+        android:key="sendto"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Reply to:" />
+    
+    
+
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+    <ListPreference
+        android:defaultValue="3"
+        android:dependency="missedcalls"
+        android:entries="@array/textreply"
+        android:entryValues="@array/textVal"
+        android:key="textreply"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Set Message" />
+    
+    </PreferenceCategory>
     
    
 	  <!-- Passwords PreferenceCategory -->
 	 
 	  <PreferenceCategory
         android:title="Tools"  >
-          
-	<Preference 
-	    android:title="Uninstall Safekey"
-	    android:dependency="enableAdmin"
-	    android:key="uninstall"/>
-        
-    <com.vuseniordesign.safekey.SK_DialogPreference
+    
+	 <com.vuseniordesign.safekey.SK_DialogPreference
         android:title="Change Password"
         android:dependency="enableAdmin"
         android:key = "pwd"
@@ -62,36 +93,23 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="Recover Password" />
+    
+    <Preference 
+        android:title="Help"
+        android:key="help"/>
+          
+	<Preference 
+	    android:title="Uninstall Safekey"
+	    android:dependency="enableAdmin"
+	    android:key="uninstall"/>
+        
+   
    
 	 </PreferenceCategory>
 	 
-	   <!-- Driver History PreferenceCategory -->
+	   <!-- Incoming Calls PreferenceCategory -->
 	 
-	  <PreferenceCategory
-        android:title="Driver History"  >
-    
-	     <!--
-         A 'parent' preference, which enables/disables child preferences (below)
-         when checked/unchecked.
-         -->
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="hist"
-        android:dependency="enableAdmin"
-        android:title="Collect Driver History" />
-
-    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
-    <ListPreference
-        android:defaultValue="3"
-        android:dependency="hist"
-        android:entries="@array/frequency"
-        android:entryValues="@array/freqVal"
-        android:key="sync_frequency"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="Frequency" />
-    
-    </PreferenceCategory>
+	  
     
    
 </PreferenceScreen>

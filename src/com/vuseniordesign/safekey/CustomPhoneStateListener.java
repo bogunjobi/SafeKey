@@ -7,13 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public abstract class CustomPhoneStateListener extends BroadcastReceiver {
 
     //The receiver will be recreated whenever android feels like it.  We need a static variable to remember data between instantiations
     static PhonecallStartEndDetector listener;
     String outgoingSavedNumber;
-    protected Context savedContext;
+    protected static Context savedContext;
 
 
     @Override
@@ -31,7 +32,10 @@ public abstract class CustomPhoneStateListener extends BroadcastReceiver {
     }
 
     
-    public Context getContext(){
+    public static Context getContext(){
+    	Log.d("getContext", "entered");
+    	if (savedContext == null)
+    		Log.d("getContext", "null");
  	   return savedContext;
     }
     

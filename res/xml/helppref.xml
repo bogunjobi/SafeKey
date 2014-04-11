@@ -13,7 +13,8 @@
      <Preference android:title="@string/faq"
          		android:key='faq'
          		/>
-      
+     
+     
       <Preference android:title="@string/issue"
          		android:key='issue'
          		android:summary='Mailto: afakeemail@gmail.com' 

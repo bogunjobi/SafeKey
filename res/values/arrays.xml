@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="frequency">
-        <item>Daily</item>
-        <item>Weekly</item>
-        <item>Bi-monthly </item>
-        <item>Monthly</item>
-        <item>Never</item>
+    <string-array name="textreply">
+        <item>I\'m currently unavailable, but I will return your call ASAP</item>
+        <item> Sorry for missing your call, I\'m driving</item>
+        <item>Can\'t answer, I\'m currently driving</item>
+        <item>Can\'t talk now, I\'ll call when I\'m available</item>
+        <item>I\'ll call you later</item>
+        <item>Go Away</item>
      </string-array>
-     <string-array name="freqVal">
+     <string-array name="textVal">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
+     </string-array>
+     
+     <string-array name="sendto">
+         <item>Everyone</item>
+         <item>Contacts only</item>
+     </string-array>
+     
+     <string-array name="sendVal">
+         <item>0</item>
+         <item>1</item>
      </string-array>
      
      <string-array name="menu">

@@ -11,28 +11,21 @@
     
     <TextView
         android:id="@+id/rgrpheader"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/customGraph"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:textColor="#0099CC"
+        style="?android:attr/listSeparatorTextViewStyle"
         />
-	<View
-	    android:id="@+id/separator1"
-	    android:layout_width="fill_parent"
-	    android:layout_height="1dp"
-	    android:layout_alignParentRight="true"
-	    android:layout_below="@+id/rgrpheader"
-	    android:layout_marginTop="7dp"
-	    android:background="#0099CC"
-	    android:visibility="visible" />
+	
    
     <RadioGroup
        android:id="@+id/radiogrp"
        android:layout_height="wrap_content"
        android:layout_width="wrap_content"
        android:layout_marginTop="5dp"
-       android:layout_below="@+id/separator1"
+       android:layout_below="@+id/rgrpheader"
        android:checkedButton="@+id/all" >
               
        
@@ -75,41 +68,55 @@
 	    android:layout_height="0.4dp"
 	    android:layout_alignParentRight="true"
 	    android:layout_below="@+id/radiogrp"
-	    android:layout_marginTop="15dp"
+	    android:layout_marginTop="7dp"
+	    android:layout_marginBottom="7dp"
 	    android:background="@android:color/darker_gray"
 	    android:visibility="visible" />
+  
+  <TextView 
+       android:id="@+id/startHeader"
+       android:text="@string/startDate"
+       android:layout_below="@+id/separator2"
+       android:padding="3dp"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/startDate"
+    <EditText
+        android:id="@+id/start"
+        android:focusable="false"    
+        android:enabled="false"
+        android:inputType="date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/separator2"
+        android:layout_below="@+id/startHeader"
         android:padding="3dp"
-        android:text="@string/startDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_marginBottom="10dp"
+        style="?android:attr/spinnerStyle"
+        android:ems="15"
         android:clickable="true"
        />
     
-    <View
-	    android:id="@+id/separator3"
-	    android:layout_width="fill_parent"
-	    android:layout_height="0.4dp"
-	    android:layout_alignParentRight="true"
-	    android:layout_below="@+id/startDate"
-	    android:layout_marginTop="5dp"
-	    android:background="@android:color/darker_gray"
-	    android:visibility="visible" />
+   
+     <TextView 
+       android:id="@+id/endHeader"
+       android:text="@string/endDate"
+       android:layout_below="@+id/start"      
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" 
+       android:padding="3dp"
+       />
 
-     <TextView
+     <EditText
          android:id="@+id/endDate"
          android:layout_width="wrap_content"
+         android:focusableInTouchMode="false" 
+         android:enabled="false"   
+         android:inputType="date"
          android:layout_height="wrap_content"
-         android:layout_alignBaseline="@+id/startDate"
-         android:layout_alignBottom="@+id/startDate"
-         android:layout_toRightOf="@+id/radiogrp"
+         android:layout_below="@+id/endHeader"
          android:clickable="true"
+         style="?android:attr/spinnerStyle"
          android:padding="3dp"
-         android:text="@string/endDate"
-         android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:ems="15" />
 
 </RelativeLayout>

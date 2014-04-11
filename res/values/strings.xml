@@ -56,8 +56,8 @@
     <string name="title_section3">Section 3</string>
     <string name="customGraph"><b>SHOW DATA FROM:</b></string>
     <string name="desc_user_data">View Driving History</string>
-    <string name="startDate"> Start Date</string>
-    <string name="endDate"> End Date</string>
+    <string name="startDate"> FROM</string>
+    <string name="endDate"> TO</string>
     
 
 </resources>
