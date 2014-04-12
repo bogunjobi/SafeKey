@@ -32,6 +32,10 @@
           <Preference android:title="Activate Lockscreen"
          		android:key="Lockscreen" 
          		/>
+          
+          <Preference android:title="Load Sample Data"
+         		android:key="loaddata" 
+         		/>
         
      </PreferenceCategory>
      

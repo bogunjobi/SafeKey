@@ -25,7 +25,7 @@ public class MyAdmin extends DeviceAdminReceiver {
 		if (intent.getAction().equals("com.vuseniordesign.safekey.UNINSTALL")){
 			Log.d("Uninstall", "Legal");
 			legalUninstall= true;
-			onDisabled(context, intent);
+			//onDisabled(context, intent);
 		}
 	}
 	

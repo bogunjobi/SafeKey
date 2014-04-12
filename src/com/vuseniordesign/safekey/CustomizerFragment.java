@@ -35,15 +35,15 @@ public class CustomizerFragment extends Fragment {
     RadioGroup rGroup;
     static CharSequence radioText;
     
-    public static String start;
-	public static String end;
+    public static Date start;
+	public static Date end;
     
     static CustomizerFragment init(){
     	CustomizerFragment newFrag = new CustomizerFragment();
      	return newFrag;        	
      }
 
-    @Override
+    @Override 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
@@ -54,6 +54,7 @@ public class CustomizerFragment extends Fragment {
         startDate = (EditText)rootView.findViewById(R.id.start);
         endDate = (EditText)rootView.findViewById(R.id.endDate);
         
+        start = end = new Date();
         
         calendar.setTime(new Date());
         
@@ -173,9 +174,9 @@ public class CustomizerFragment extends Fragment {
     	        activity_text.setText(strdate);
     	        
     	        if (pos == 0)
-    	    		start = strdate;
+    	    		start = date;
     	    	else
-    	    		end = strdate;
+    	    		end = date;
     	    }
     	}
 

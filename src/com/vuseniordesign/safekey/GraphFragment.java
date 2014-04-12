@@ -71,10 +71,14 @@ public class GraphFragment extends Fragment {
          LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.graph1);
          
          SimpleDateFormat cDate = new SimpleDateFormat("MM-dd-yyyy");
- 			String currentDate = null; 		
+         
  			Calendar calendar = Calendar.getInstance();
- 			//calendar.setTime(new Date());
- 			Date newDate; // = calendar.getTime();
+ 			Date newDate;
+ 			String currentDate;
+ 			
+ 			String startDate; 
+ 			String endDate;
+ 			
  			GraphView gview = null;
  			radioVal = (String) CustomizerFragment.radioText;
  			
@@ -85,10 +89,19 @@ public class GraphFragment extends Fragment {
          
          if (radioVal.equals("Beginning of Time"))
         	 gview = drawGraph(null, null);
+         /*else {
+        	 startDate = cDate.format(CustomizerFragment.start);
+        	 Log.d("Start Date", startDate);
+        	 endDate = cDate.format(CustomizerFragment.end);
+        	 Log.d("End Date", endDate);
+        	 gview = drawGraph(startDate, endDate);
+         } */     	 
+         //TODO: Compress this
          else if (radioVal.equals("1 year")){
         	 calendar.add(Calendar.YEAR, -1);
       		 newDate = calendar.getTime();
       		 currentDate = cDate.format(newDate);
+      		 Log.d("Current", currentDate);
       		 gview = drawGraph(currentDate, null);
          }  else if (radioVal.equals("1 month")){
         	 calendar.add(Calendar.MONTH, -1);
@@ -100,10 +113,14 @@ public class GraphFragment extends Fragment {
       		 newDate = calendar.getTime();
       		 currentDate = cDate.format(newDate);
       		 gview = drawGraph(currentDate, null);
-         }else {
-        	 gview = drawGraph(null, null);
+         }else if (radioVal.equals("Custom")){
+        	 startDate = cDate.format(CustomizerFragment.start);
+        	 Log.d("Start Date", startDate);
+        	 endDate = cDate.format(CustomizerFragment.end);
+        	 Log.d("End Date", endDate);
+        	 gview = drawGraph(startDate, endDate);
          }
- 			} 
+ 		} 
          ll.addView(gview);   
          
          try {
@@ -226,31 +243,28 @@ public class GraphFragment extends Fragment {
  		   
  		   if (fragVal == 2){
  			   if (value >= 3600)
- 				   return String.valueOf((int) value/3600) + " hours" + String.valueOf(value%3600) + " mins" ;
+ 				   return String.valueOf((int) value/3600) + " h" + String.valueOf(value%3600) + " m" ;
  			   else if (value < 3600 && value > 60)
- 			   		return String.valueOf(Math.round(value/60)) + " mins";
+ 			   		return String.valueOf(Math.round(value/60)) + " m";
  			   else if (value == 0)
  				   return String.valueOf(0);
  			   else 
- 				   return String.valueOf((int) value) + " secs";
+ 				   return String.valueOf((int) value) + " s";
  		   }
  	   	  return String.valueOf((int)value);
  	   }
     }
  });
  	graphView.addSeries(series); 
- 	//graphView.setViewPort(2, 6);
- 	//graphView.setScalable(true);
- 	//graphView.setScrollable(true);
+ 	graphView.setScalable(true);
+ 	graphView.setScrollable(true);
  	graphView.getGraphViewStyle().setHorizontalLabelsColor(Color.BLACK);
  	graphView.getGraphViewStyle().setVerticalLabelsColor(Color.BLACK);
  	
  	if (fragVal == 1)
  		((LineGraphView) graphView).setDrawDataPoints(true);
- 	//graphView.getGraphViewStyle().useTextColorFromTheme(MyApplication.getAppContext());
- 				 
  	return graphView;
- 	//container.findViewById(R.id.graph1).addView(graphView);
+ 	
  	}
 
  	//use to aggregate duration or counter by day
@@ -258,9 +272,6 @@ public class GraphFragment extends Fragment {
  		Map<String, Integer> map = new LinkedHashMap<String, Integer>();
  		Set<String> keyset = new HashSet<String>();	
  		Integer val = 0;
- 		/*String [] dates = (String []) obj[0];
- 		//int [] duration = (int []) obj[1];
- 		int [] values = (int []) obj[2]; */
  		switch (agg){
  		case(1): //monthly
  		

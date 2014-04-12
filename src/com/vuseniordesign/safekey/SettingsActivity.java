@@ -30,6 +30,8 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
@@ -137,6 +139,7 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		addPreferencesFromResource(R.xml.preferences);
 			
+		PreferenceManager.setDefaultValues(SettingsActivity.this, R.xml.preferences, false);
 		
 		
 		// Add  preferences.
@@ -145,7 +148,10 @@ public class SettingsActivity extends PreferenceActivity {
 		if (!name.equals(null)){
 			gen.setDefaultValue(name);
 			gen.setSummary(name);
+			
 			gen.getEditText().setText(name);
+			//gen.getEditText().
+			Log.d("EditText Value", gen.getEditText().getText().toString());
 						
 		} else {
 			return;
@@ -153,7 +159,7 @@ public class SettingsActivity extends PreferenceActivity {
 		//Log.d("Value", gen.getSummary().toString());	
 		
 		
-		PreferenceManager.setDefaultValues(SettingsActivity.this, R.xml.preferences, false);
+		
 		
 		message = (ListPreference)findPreference("textreply");
 		bindPreferenceSummaryToValue(message);
@@ -165,13 +171,14 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(reply);
 		
 		
-		
-		bindPreferenceSummaryToValue(gen);
-		
 		//first time initialization ONLY
 		
+		bindPreferenceSummaryToValue(gen);
 		gen.setSummary(name);
 		gen.getEditText().setText(name);
+		
+		
+		
 		
 		
 		pref = (CheckBoxPreference) findPreference("enableAdmin");
@@ -190,6 +197,12 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		Preference demo = findPreference("Lockscreen");
 		demo.setOnPreferenceClickListener(l);
+		
+		Preference data = findPreference("loaddata");
+		data.setOnPreferenceClickListener(l);
+		
+		
+		Log.d("EditText Value2", gen.getEditText().getText().toString());
 	}
 
 	
@@ -233,9 +246,11 @@ public class SettingsActivity extends PreferenceActivity {
 
 	private static void showDialog(final CheckBoxPreference preference){
 		AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.activity);
+		builder.setCancelable(false);
 	 	builder.setTitle("Enter Admin Password");
+	 	
+	 	
 	 	final EditText input = new EditText(SettingsActivity.activity);
-	 	input.setHint("Enter Password");
 	 	input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
 	 	builder.setView(input);
@@ -401,7 +416,7 @@ public class SettingsActivity extends PreferenceActivity {
 					SharedPreferences auth_pref = activity.getSharedPreferences("Login", MODE_PRIVATE);
 					SharedPreferences.Editor editor = auth_pref.edit();
 					editor.putString("name", stringValue);
-					Log.d("d Username", stringValue);
+					Log.d("Username", stringValue);
 					editor.commit();
 		}else {
 			/*if (preference.getKey().equals("LockScreenImage")){
@@ -467,15 +482,23 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	   OnPreferenceClickListener l = new Preference.OnPreferenceClickListener() {
 	       public boolean onPreferenceClick(Preference preference) {
+	    	   if (preference.getKey().equals("Lockscreen")){
 	  
 	    	   Intent i = new Intent(SettingsActivity.this, LockScreen.class);
 	    	   i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	           i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 	           i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(i);
-				return true;						
-					}
-				};
+			   startActivity(i);
+			return true;		
+	    	   } else if (preference.getKey().equals("loaddata")) {
+	    		   startService(new Intent(SettingsActivity.this, LoadData.class ));
+	    		   Toast.makeText(SettingsActivity.this, "Loading Data...", Toast.LENGTH_SHORT).show();
+	    		   return true;
+	    	   }
+	    	   return false;
+	    	   
+			}
+		};
 				
 		
 	   
@@ -604,17 +627,27 @@ public class SettingsActivity extends PreferenceActivity {
 	    	  Intent i = new Intent();
 			   i.setAction("com.vuseniordesign.safekey.UNINSTALL");	    		   
 			   sendBroadcast(i);
+			   
+			   
+			   //while (mDPM.isAdminActive(adminReceiver));
 	        }
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			mDPM.removeActiveAdmin(adminReceiver);
+			if (mDPM.isAdminActive(adminReceiver))
+				   mDPM.removeActiveAdmin(adminReceiver);
 			while (mDPM.isAdminActive(adminReceiver));
 			return true;
 		}
+		
+		/*@Override
+		void onProgressUpdate(){
+			Toast.makeText(SettingsActivity.this, "Please wait...", Toast.LENGTH_LONG).show();
+		}*/
 	    
 	    // runs on the UI thread
 	    @Override 
 	    protected void onPostExecute(Boolean b) {
+	    	
 	    	   Uri uri = Uri.fromParts("package", getPackageName(), null);
 			   startActivity(new Intent(Intent.ACTION_DELETE, uri));
 			   

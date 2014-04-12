@@ -76,7 +76,7 @@ public final class R {
         public static final int action_settings=0x7f0a003e;
         public static final int add_contacts=0x7f0a000e;
         public static final int addcontacts=0x7f0a0030;
-        public static final int all=0x7f0a0017;
+        public static final int all=0x7f0a0018;
         public static final int button1=0x7f0a0036;
         public static final int contact1=0x7f0a000f;
         public static final int contact2=0x7f0a0010;
@@ -135,7 +135,7 @@ public final class R {
         public static final int tvPrompt=0x7f0a0002;
         public static final int view=0x7f0a0033;
         public static final int week=0x7f0a001a;
-        public static final int year=0x7f0a0018;
+        public static final int year=0x7f0a0017;
     }
     public static final class layout {
         public static final int activity_dadisabled=0x7f030000;

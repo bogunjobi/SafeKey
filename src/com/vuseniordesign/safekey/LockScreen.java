@@ -3,6 +3,7 @@ package com.vuseniordesign.safekey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 
@@ -136,7 +137,7 @@ public class LockScreen extends Activity {
 		//data collection
 		
 		start = System.nanoTime();
-		SimpleDateFormat cDate = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+		SimpleDateFormat cDate = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss", Locale.ENGLISH);
 		currentDate = cDate.format(new Date());
 		
 		//Intent broadcast = new Intent("com.vuseniordesign.safekey.LOCKSCREEN_ENABLED");
@@ -234,13 +235,13 @@ public class LockScreen extends Activity {
 		
 		if (isActiveAdmin()){
 			
-			//lock the screen after 3 seconds
+			//lock the screen after 5 seconds
 			new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mDPM.lockNow();
                 }
-            }, 4000);	
+            }, 5000);	
 	        
 		}
 		
@@ -344,7 +345,6 @@ public class LockScreen extends Activity {
 	@Override
 	protected void onDestroy() {
 	  super.onDestroy();
-	  //audiomanager.setRingerMode(currentVolume);
 	  Log.d(TAG, "Goodbye cruel world");
 	  enabled = false;
 	  isActive = false;

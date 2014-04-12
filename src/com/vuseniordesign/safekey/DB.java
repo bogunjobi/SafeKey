@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
  
 import android.content.ContentValues;
 import android.content.Context;
@@ -81,11 +82,22 @@ public class DB extends SQLiteOpenHelper {
     // Getting single contact
     List<String> getEntryFrom(String date, String enddate) {
         SQLiteDatabase db = this.getReadableDatabase();
+        
+        //make sure time is not higher than current time
+        SimpleDateFormat checkDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
+        String today = checkDate.format(new Date());
+        if (today.equals(enddate))
+        	enddate = null;
+        	
+        
         String currentDate;
         if (enddate == null){ //get current date
-        SimpleDateFormat cDate = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        SimpleDateFormat cDate = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss", Locale.ENGLISH);
 		currentDate = cDate.format(new Date());
-        } else currentDate = enddate;
+        } else currentDate = enddate + "23:59:59";
+       
+        
+        
         List <String> results = new ArrayList<String>();
         Cursor cursor = db.query(TABLE, new String[] { DATE,
                 DURATION, COUNTER}, DATE + " BETWEEN ? AND ?",

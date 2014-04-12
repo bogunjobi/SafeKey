@@ -41,12 +41,13 @@
         <activity
             android:name="com.vuseniordesign.safekey.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="com.vuseniordesign.safekey.Main" >
+            android:parentActivityName="com.vuseniordesign.safekey.Main" 
+            android:screenOrientation="portrait">
 
             <!-- Parent activity meta-data to support API level 7+ -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.safekey.Main" />
+                android:value="com.vuseniordesign.safekey.Main" />
         </activity>
         <activity
             android:name="com.vuseniordesign.safekey.Main"
@@ -68,8 +69,8 @@
             android:label="@string/title_activity_lock_screen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:launchMode="singleTop" >
-"
+            android:launchMode="singleInstance" >
+
             <intent-filter>
                 <action android:name="BluetoothDevice.ACTION_ACL_DISCONNECTED" />
 
@@ -92,7 +93,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
                 <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
                 <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
-                <action android:name="com.example.safekey.UNINSTALL" />
+                <action android:name="com.vuseniordesign.safekey.UNINSTALL" />
             </intent-filter>
         </receiver>
 
@@ -142,6 +143,10 @@
         </activity>
         
         <service android:name="com.vuseniordesign.safekey.OverlayService"></service>
+        
+        
+        <service
+            android:name="com.vuseniordesign.safekey.LoadData"></service>
     </application>
 
 </manifest>
